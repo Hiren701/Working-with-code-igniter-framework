@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Working-with-code-igniter-framework by Hiren701</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Working-with-code-igniter-framework</h1>
+        <p>Working with code igniter framework</p>
+
+        <p class="view"><a href="https://github.com/Hiren701/Working-with-code-igniter-framework">View the Project on GitHub <small>Hiren701/Working-with-code-igniter-framework</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Hiren701/Working-with-code-igniter-framework/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Hiren701/Working-with-code-igniter-framework/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Hiren701/Working-with-code-igniter-framework">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="create-dynamic-controller-and-model" class="anchor" href="#create-dynamic-controller-and-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create dynamic controller and model</h1>
+
+<ul>
+<li>to reduce code , follow below way that reduce your time to right each time new function in model</li>
+</ul>
+
+<p>*****  calling function from controller   *****</p>
+
+<pre><code>$table="drill";
+$alias='*';
+$joinArgument=array
+            (
+                        array('tableName'=&gt;'drillCategoryMaster',
+                          'joinCondition'=&gt;'drillCategoryMaster.drillCategoryId =
+                         drill.drillCategoryId',
+                          'joinType'=&gt;'LEFT' 
+                         ),
+              );
+$where=array('drillMainCategory.mainCategoryId'=&gt;$_POST['mainCat']);
+
+$data=$this-&gt;commonmodel-&gt;getData($alias,$table,$where,$joinArgument);
+</code></pre>
+
+<p>************ code for model </p>
+
+<p>function getData($alias='*',$table,$where='',$join='',$orderBy='',$groupby='',$limit='')
+    {</p>
+
+<pre><code>    $this-&gt;db-&gt;select($alias);
+    $this-&gt;db-&gt;from($table);
+    if($join!='')
+    {
+         for($i=0;$i&lt;count($join);$i++)
+         {
+             $this-&gt;db-&gt;join($join[$i]['tableName'],$join[$i
+             ['joinCondition'],$join[$i]['joinType']);
+        }
+    }
+    if($where!='')
+    {
+        foreach($where as $coulmn=&gt;$value){
+            $this-&gt;db-&gt;where($coulmn,$value);
+        }
+    }
+    if($orderBy!='')
+    {
+        $orderByKey=array_keys($orderBy);
+        $orderByMode=array_values($orderBy);
+        $this-&gt;db-&gt;order_by($orderByKey[0],$orderByMode[0]);
+    }
+    if($groupby != '')
+    {
+        $this-&gt;db-&gt;group_by($groupby);
+    }
+   if($limit!='')
+    {
+        $limit=explode(',', $limit); 
+        if(count($limit)&gt;=2)
+        {
+            $this-&gt;db-&gt;limit($limit[1],$limit[0]);
+        }else {
+            $this-&gt;db-&gt;limit($limit);
+        }
+    }
+
+    $query=$this-&gt;db-&gt;get();
+    $result=$query-&gt;result();
+     return $result;
+}
+</code></pre>
+
+<p>public function updateData($table,$valuesArray,$whereArray){</p>
+
+<pre><code>    return $this-&gt;db-&gt;update($table, $valuesArray, $whereArray);
+}
+</code></pre>
+
+<p>public function deleteData($table,$field,$values) 
+    {
+        $this-&gt;db-&gt;where_in($field, $values);
+        $this-&gt;db-&gt;delete($table);
+         return TRUE; 
+    }
+ public function insertData($table,$insertArray) 
+    {
+        $this-&gt;db-&gt;insert($table, $insertArray);
+        return mysql_insert_id();
+    } </p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Hiren701">Hiren701</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
